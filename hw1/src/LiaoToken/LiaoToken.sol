@@ -16,6 +16,7 @@ interface IERC20 {
 contract LiaoToken is IERC20 {
     // TODO: you might need to declare several state variable here
     mapping(address account => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
     mapping(address account => bool) isClaim;
 
     uint256 private _totalSupply;
@@ -50,27 +51,67 @@ contract LiaoToken is IERC20 {
         return _balances[account];
     }
 
-    function claim() external returns (bool) {
-        if (isClaim[msg.sender]) revert();
-        _balances[msg.sender] += 1 ether;
-        _totalSupply += 1 ether;
-        emit Claim(msg.sender, 1 ether);
+    // function claim() external returns (bool) {
+    //     if (isClaim[msg.sender]) revert();
+    //     _balances[msg.sender] += 1 ether;
+    //     _totalSupply += 1 ether;
+    //     emit Claim(msg.sender, 1 ether);
+    //     return true;
+    // }
+
+    // The claim function allowing users to claim a fixed amount of tokens once
+    function claim() public returns (bool) {
+        require(!isClaim[msg.sender], "Already claimed");
+        uint256 amount = 1 ether; // Define the amount to claim
+        _balances[msg.sender] += amount;
+        _totalSupply += amount;
+        isClaim[msg.sender] = true;
+        emit Claim(msg.sender, amount);
         return true;
     }
 
-    function transfer(address to, uint256 amount) external returns (bool) {
-        // TODO: please add your implementaiton here
+    // function transfer(address to, uint256 amount) external returns (bool) {
+    //     // TODO: please add your implementaiton here
+    // }
+
+    // function transferFrom(address from, address to, uint256 value) external returns (bool) {
+    //     // TODO: please add your implementaiton here
+    // }
+
+    // function approve(address spender, uint256 amount) external returns (bool) {
+    //     // TODO: please add your implementaiton here
+    // }
+
+    // function allowance(address owner, address spender) public view returns (uint256) {
+    //     // TODO: please add your implementaiton here
+    // }
+    function transfer(address to, uint256 amount) public override returns (bool) {
+        require(_balances[msg.sender] >= amount, "Insufficient balance");
+        _balances[msg.sender] -= amount;
+        _balances[to] += amount;
+        emit Transfer(msg.sender, to, amount);
+        return true;
     }
 
-    function transferFrom(address from, address to, uint256 value) external returns (bool) {
-        // TODO: please add your implementaiton here
+    function transferFrom(address from, address to, uint256 amount) public override returns (bool) {
+        require(_balances[from] >= amount, "Insufficient balance");
+        require(_allowances[from][msg.sender] >= amount, "Insufficient allowance");
+        _balances[from] -= amount;
+        _balances[to] += amount;
+        _allowances[from][msg.sender] -= amount;
+        emit Transfer(from, to, amount);
+        return true;
     }
 
-    function approve(address spender, uint256 amount) external returns (bool) {
-        // TODO: please add your implementaiton here
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        _allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+        return true;
     }
 
-    function allowance(address owner, address spender) public view returns (uint256) {
-        // TODO: please add your implementaiton here
+    function allowance(address owner, address spender) public view override returns (uint256) {
+        return _allowances[owner][spender];
     }
+
+
 }
