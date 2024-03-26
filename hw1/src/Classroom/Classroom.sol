@@ -96,11 +96,19 @@ interface IClassroomV2 {
     function isEnrolled() external view returns (bool);
 }
 
+// contract StudentV2 {
+//     function register() external view returns (uint256) {
+//         // TODO: please add your implementaiton here
+//     }
+// }
+
 contract StudentV2 {
     function register() external view returns (uint256) {
-        // TODO: please add your implementaiton here
+        return 123;
     }
 }
+
+
 
 /* Problem 3 Interface & Contract */
 contract StudentV3 {
