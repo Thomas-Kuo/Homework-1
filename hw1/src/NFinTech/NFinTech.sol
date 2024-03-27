@@ -135,75 +135,75 @@ contract NFinTech is IERC721 {
     }
 
 
-    function _safeTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal {
-        _transfer(from, to, tokenId);
-        if (isContract(to)) {
-            require(
-                _checkOnERC721Received(from, to, tokenId, data),
-                "ERC721: transfer to non ERC721Receiver implementer"
-            );
-        }
-    }
+    // function _safeTransfer(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId,
+    //     bytes memory data
+    // ) internal {
+    //     _transfer(from, to, tokenId);
+    //     if (isContract(to)) {
+    //         require(
+    //             _checkOnERC721Received(from, to, tokenId, data),
+    //             "ERC721: transfer to non ERC721Receiver implementer"
+    //         );
+    //     }
+    // }
 
     
 
-    function _isApprovedOrOwner(address spender, uint256 tokenId)
-        internal
-        view
-        returns (bool)
-    {
-        address owner = ownerOf(tokenId);
-        return (spender == owner ||
-            getApproved(tokenId) == spender ||
-            isApprovedForAll(owner, spender));
-    }
+    // function _isApprovedOrOwner(address spender, uint256 tokenId)
+    //     internal
+    //     view
+    //     returns (bool)
+    // {
+    //     address owner = ownerOf(tokenId);
+    //     return (spender == owner ||
+    //         getApproved(tokenId) == spender ||
+    //         isApprovedForAll(owner, spender));
+    // }
 
-    function _transfer(address from, address to, uint256 tokenId) internal {
-        require(ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
-        require(to != address(0), "ERC721: transfer to the zero address");
+    // function _transfer(address from, address to, uint256 tokenId) internal {
+    //     require(ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
+    //     require(to != address(0), "ERC721: transfer to the zero address");
 
-        // Clear approvals from the previous owner
-        _approve(address(0), tokenId);
+    //     // Clear approvals from the previous owner
+    //     _approve(address(0), tokenId);
 
-        _balances[from] -= 1;
-        _balances[to] += 1;
-        _owner[tokenId] = to;
+    //     _balances[from] -= 1;
+    //     _balances[to] += 1;
+    //     _owner[tokenId] = to;
 
-        emit Transfer(from, to, tokenId);
-    }
+    //     emit Transfer(from, to, tokenId);
+    // }
 
-    function _checkOnERC721Received(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) private returns (bool) {
-        if (isContract(to)) {
-            try IERC721TokenReceiver(to).onERC721Received(
-                msg.sender, from, tokenId, data
-            ) returns (bytes4 retval) {
-                return retval == IERC721TokenReceiver.onERC721Received.selector;
-            } catch (bytes memory) {
-                revert("ERC721: transfer to non ERC721Receiver implementer");
-            }
-        } else {
-            return true;
-        }
-    }
+    // function _checkOnERC721Received(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId,
+    //     bytes memory data
+    // ) private returns (bool) {
+    //     if (isContract(to)) {
+    //         try IERC721TokenReceiver(to).onERC721Received(
+    //             msg.sender, from, tokenId, data
+    //         ) returns (bytes4 retval) {
+    //             return retval == IERC721TokenReceiver.onERC721Received.selector;
+    //         } catch (bytes memory) {
+    //             revert("ERC721: transfer to non ERC721Receiver implementer");
+    //         }
+    //     } else {
+    //         return true;
+    //     }
+    // }
 
-    function isContract(address account) internal view returns (bool) {
-        return account.code.length > 0;
-    }
+    // function isContract(address account) internal view returns (bool) {
+    //     return account.code.length > 0;
+    // }
 
-    function _approve(address to, uint256 tokenId) internal {
-        _tokenApproval[tokenId] = to;
-        emit Approval(ownerOf(tokenId), to, tokenId);
-    }
+    // function _approve(address to, uint256 tokenId) internal {
+    //     _tokenApproval[tokenId] = to;
+    //     emit Approval(ownerOf(tokenId), to, tokenId);
+    // }
 
 
 
